@@ -35,6 +35,8 @@
   const errorMessage = document.getElementById("errorMessage");
   const retryBtn = document.getElementById("retryBtn");
   const downloadBtn = document.getElementById("downloadBtn");
+  const headerStatus = document.getElementById("headerStatus");
+  const reportContainer = document.getElementById("reportContainer");
 
   let mouse = { x: -200, y: -200 };
   let cursorTarget = { x: -200, y: -200 };
@@ -339,10 +341,10 @@
   // ══════════════════════════════════════════════
 
   function startTimer() {
-    timerStart = Date.now();
+    startTime = Date.now();
     pipelineTimer.textContent = "00:00";
     timerInterval = setInterval(() => {
-      const elapsed = Math.floor((Date.now() - timerStart) / 1000);
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
       const mins = String(Math.floor(elapsed / 60)).padStart(2, "0");
       const secs = String(elapsed % 60).padStart(2, "0");
       pipelineTimer.textContent = `${mins}:${secs}`;
@@ -409,7 +411,7 @@
   }
 
   // ── Network Utility ────────────────────────
-  const API_BASE = location.hostname === "localhost" ? "http://localhost:8000/api" : "/api";
+  const API_BASE = location.hostname === "localhost" ? `http://localhost:${location.port}/api` : "/api";
 
   async function cancelResearch() {
     if (!currentTaskId) return;
@@ -424,6 +426,13 @@
     finishPipeline();
     headerStatus.className = "header-status";
     headerStatus.querySelector("span").textContent = "Cancelled";
+  }
+
+  function clearUpload() {
+    uploadedContext = "";
+    fileInput.value = "";
+    uploadStatus.classList.add("hidden");
+    uploadStatus.textContent = "";
   }
 
   async function handleUpload(file) {
@@ -441,7 +450,8 @@
       const data = await response.json();
       if (response.ok) {
         uploadedContext = data.extracted_text;
-        uploadStatus.textContent = `📎 ${file.name} attached.`;
+        uploadStatus.innerHTML = `📎 ${file.name} attached. <span class="remove-attachment" id="removeAttachment">✕ Remove</span>`;
+        document.getElementById("removeAttachment").addEventListener("click", clearUpload);
       } else {
         uploadStatus.textContent = `Upload failed: ${data.detail}`;
       }

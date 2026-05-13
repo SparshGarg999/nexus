@@ -626,6 +626,19 @@ body {
   padding-left: 10px;
 }
 
+.remove-attachment {
+  color: #ef4444;
+  cursor: pointer;
+  margin-left: 8px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.remove-attachment:hover {
+  color: #f87171;
+  text-decoration: underline;
+}
+
 /* ── Source Cards ───────────────────────── */
 .sources-container {
   margin-top: 24px;
