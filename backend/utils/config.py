@@ -16,6 +16,7 @@ CORS_ORIGINS = [
     "http://localhost:8000",
     "http://localhost:3000",
     "https://nexus-multi-agent.vercel.app",
+    "https://nexus-nine-rust-54.vercel.app",
 ]
 if os.getenv("FRONTEND_URL"):
     cors_url = os.getenv("FRONTEND_URL")
