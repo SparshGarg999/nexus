@@ -15,6 +15,7 @@ logger = logging.getLogger("nexus")
 CORS_ORIGINS = [
     "http://localhost:8000",
     "http://localhost:3000",
+    "https://nexus-multi-agent.vercel.app",
 ]
 if os.getenv("FRONTEND_URL"):
     cors_url = os.getenv("FRONTEND_URL")

@@ -413,8 +413,10 @@
   // ── Network Utility ────────────────────────
   // In production (Vercel), the frontend is served from Vercel and the API from Render.
   // Set RENDER_API_URL as a Vercel environment variable to point to your Render backend.
-  const RENDER_API_URL = "https://nexus-backend.onrender.com"; // Change this to your Render URL
-  const API_BASE = location.hostname === "localhost" ? `http://localhost:${location.port}/api` : `${RENDER_API_URL}/api`;
+  const RENDER_API_URL = "https://nexus-backend-w8s0.onrender.com";
+  const API_BASE = (location.hostname === "localhost" || location.hostname === "127.0.0.1")
+    ? `http://localhost:${location.port}/api` 
+    : `${RENDER_API_URL}/api`;
 
   async function cancelResearch() {
     if (!currentTaskId) return;
