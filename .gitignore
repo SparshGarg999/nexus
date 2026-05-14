@@ -7,3 +7,4 @@ env/
 temp_*
 *.log
 .DS_Store
+node_modules/
