@@ -3,8 +3,12 @@
   "public": true,
   "rewrites": [
     {
+      "source": "/static/(.*)",
+      "destination": "/$1"
+    },
+    {
       "source": "/(.*)",
-      "destination": "/frontend/$1"
+      "destination": "/$1"
     }
   ]
 }
