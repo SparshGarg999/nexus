@@ -75,6 +75,13 @@ Visit `http://localhost:8000` to access the platform.
 
 ---
 
+## 🔗 Live Demo
+Check out the live platform here: [nexus-research-ai.vercel.app](https://nexus-research-ai.vercel.app)
+
+---
+
+---
+
 ## 🏗️ Architecture Guide
 For a deep dive into the system architecture, justifications for technical choices, and interview Q&A, please refer to the [Implementation Plan](./implementation_plan.md).
 
