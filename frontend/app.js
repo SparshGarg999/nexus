@@ -21,7 +21,7 @@
 
   const pipelineSection = document.getElementById("pipelineSection");
   const pipelineTimer = document.getElementById("pipelineTimer");
-  
+
   const sourcesContainer = document.getElementById("sourcesContainer");
   const sourcesGrid = document.getElementById("sourcesGrid");
 
@@ -45,7 +45,7 @@
   let startTime = null;
   let rawReportMarkdown = "";
   let currentTopic = "";
-  
+
   let currentTaskId = null;
   let eventSource = null;
   let uploadedContext = "";
@@ -411,13 +411,16 @@
   }
 
   // ── Network Utility ────────────────────────
-  const API_BASE = location.hostname === "localhost" ? `http://localhost:${location.port}/api` : "/api";
+  // In production (Vercel), the frontend is served from Vercel and the API from Render.
+  // Set RENDER_API_URL as a Vercel environment variable to point to your Render backend.
+  const RENDER_API_URL = "https://nexus-backend.onrender.com"; // Change this to your Render URL
+  const API_BASE = location.hostname === "localhost" ? `http://localhost:${location.port}/api` : `${RENDER_API_URL}/api`;
 
   async function cancelResearch() {
     if (!currentTaskId) return;
     try {
       await fetch(`${API_BASE}/cancel/${currentTaskId}`, { method: "POST" });
-    } catch(e) {}
+    } catch (e) { }
     if (eventSource) {
       eventSource.close();
       eventSource = null;
@@ -441,7 +444,7 @@
     uploadStatus.classList.remove("hidden");
     const formData = new FormData();
     formData.append("file", file);
-    
+
     try {
       const response = await fetch(`${API_BASE}/upload`, {
         method: "POST",
@@ -455,7 +458,7 @@
       } else {
         uploadStatus.textContent = `Upload failed: ${data.detail}`;
       }
-    } catch(e) {
+    } catch (e) {
       uploadStatus.textContent = "Upload failed.";
     }
   }
@@ -470,10 +473,10 @@
     cancelBtn.classList.remove("hidden");
     uploadBtn.classList.add("hidden");
     fileInput.disabled = true;
-    
+
     headerStatus.className = "header-status running";
     headerStatus.querySelector("span").textContent = "Researching";
-    
+
     rawReportMarkdown = "";
     currentTopic = topic;
 
@@ -483,18 +486,18 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ topic, context: uploadedContext })
       });
-      
+
       const data = await res.json();
       currentTaskId = data.task_id;
-      
+
       // Connect to SSE
       eventSource = new EventSource(`${API_BASE}/stream/${currentTaskId}`);
-      
+
       eventSource.onmessage = (event) => {
         const msg = JSON.parse(event.data);
         handleStreamEvent(msg);
       };
-      
+
       eventSource.onerror = () => {
         eventSource.close();
         stopTimer();
@@ -502,7 +505,7 @@
         showSection(errorSection);
         errorMessage.textContent = "Connection lost. Please try again.";
       };
-      
+
     } catch (e) {
       stopTimer();
       finishPipeline();
@@ -535,18 +538,18 @@
 
       case "token":
         if (reportSection.classList.contains("hidden")) {
-            showSection(reportSection);
-            reportTopic.textContent = currentTopic;
+          showSection(reportSection);
+          reportTopic.textContent = currentTopic;
         }
         rawReportMarkdown += msg.content;
         reportContent.innerHTML = renderMarkdown(rawReportMarkdown);
         // Scroll to bottom of report smoothly
         const reportScroll = document.documentElement.scrollTop + reportContainer.getBoundingClientRect().bottom;
         if (reportScroll > window.scrollY + window.innerHeight - 100) {
-            window.scrollBy({ top: 50, behavior: 'auto' });
+          window.scrollBy({ top: 50, behavior: 'auto' });
         }
         break;
-        
+
       case "sources":
         showSection(sourcesContainer);
         sourcesGrid.innerHTML = msg.data.map(src => `
@@ -574,8 +577,8 @@
         stopTimer();
         finishPipeline();
         if (eventSource) {
-            eventSource.close();
-            eventSource = null;
+          eventSource.close();
+          eventSource = null;
         }
         break;
     }
@@ -632,12 +635,12 @@
     cancelBtn.classList.add("hidden");
     uploadBtn.classList.remove("hidden");
     fileInput.disabled = false;
-    
+
     headerStatus.className = "header-status";
     headerStatus.querySelector("span").textContent = "Complete";
     setTimeout(() => {
       if (headerStatus.querySelector("span").textContent === "Complete") {
-          headerStatus.querySelector("span").textContent = "Ready";
+        headerStatus.querySelector("span").textContent = "Ready";
       }
     }, 5000);
   }
@@ -662,10 +665,10 @@
   // ══════════════════════════════════════════════
 
   uploadBtn.addEventListener("click", () => fileInput.click());
-  
+
   fileInput.addEventListener("change", (e) => {
     if (e.target.files.length > 0) {
-        handleUpload(e.target.files[0]);
+      handleUpload(e.target.files[0]);
     }
   });
 

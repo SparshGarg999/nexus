@@ -15,10 +15,13 @@ logger = logging.getLogger("nexus")
 CORS_ORIGINS = [
     "http://localhost:8000",
     "http://localhost:3000",
-    # Add deployed frontend URLs here via ENV variables later
 ]
 if os.getenv("FRONTEND_URL"):
-    CORS_ORIGINS.append(os.getenv("FRONTEND_URL"))
+    cors_url = os.getenv("FRONTEND_URL")
+    if cors_url not in CORS_ORIGINS:
+        CORS_ORIGINS.append(cors_url)
+if os.getenv("RENDER_EXTERNAL_URL"):
+    CORS_ORIGINS.append(os.getenv("RENDER_EXTERNAL_URL"))
 
 def get_groq_api_key():
     key = os.getenv("GROQ_API_KEY")
